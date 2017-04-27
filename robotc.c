@@ -118,14 +118,13 @@ task objectDetect () {
 	int sonarAvg;
 	while(true) {
 		sonarAvg = getUSDistance(sonar);
-		if(sonarAvg < 90 && sonarAvg > 45) {
+		if(sonarAvg < 90 && sonarAvg > 5) {
 			stopTask(randomWalk);
-			setMotorSpeed(leftMotor, 100);
-			setMotorSpeed(rightMotor, 100);
-		} else if(sonarAvg < 45 && sonarAvg > 15) {
-			setMotorSpeed(leftMotor, 35);
-			setMotorSpeed(rightMotor, 35);
-		}	else if(sonarAvg < 15){
+			float actualSpeed = (sonarAvg / 90.0) * 128;
+			//writeDebugStreamLine("speed: %f", actualSpeed);
+			setMotorSpeed(leftMotor, actualSpeed);
+			setMotorSpeed(rightMotor, actualSpeed);
+		} else if(sonarAvg <= 5){
 			setMotorSpeed(leftMotor, 0);
 			setMotorSpeed(rightMotor, 0);
 			wait1Msec(2000);
@@ -133,6 +132,8 @@ task objectDetect () {
 			setMotorSpeed(rightMotor, -55);
 			wait1Msec(200);
 			randomDir();
+			startTask(randomWalk);
+		} else if(sonarAvg > 95){
 			startTask(randomWalk);
 		}
 	}
